@@ -7,31 +7,40 @@ from time import sleep
 fp = webdriver.FirefoxProfile('/home/chiren/.mozilla/firefox/s7q26fjl.default')
 driver = webdriver.Firefox(fp)
 
-#A dictonary to store all the 
+#A dictonary to store all the theatres
 theatre = {
 	
 }
 def min():
+	#list to store dictionaries
 	l1 = []
 	c = 1
+	a = 1
 	driver.get("https://in.bookmyshow.com/buytickets/tanhaji-the-unsung-warrior-mumbai/movie-mumbai-ET00059932-MT/20200117")
-	#for loop to be added here 
-	venue = driver.find_element_by_xpath("/html/body/section[1]/div[2]/div/ul/li[1]/div[1]/div[2]/div/a")
-	venue_name = venue.text
-	venue_name = {
-	"name" : venue_name
-	 }
-	timing_path = "/html/body/section[1]/div[2]/div/ul/li[1]/div[2]/div[2]/div"
-	timing_text = driver.find_element_by_xpath(timing_path)
-	timing_value = timing_text.text
-	print(timing_value)
-	while len(driver.find_elements_by_xpath(timing_path)) > 0 :
-		price_min = check_pricing("/html/body/section[1]/div[2]/div/ul/li[4]/div[2]/div[2]/div[{}]".format(c))
-		venue_name [timing_value] = price_min
-		print(venue_name)
-		l1.append(venue_name)
-		c = c+1
-		timing_path = "/html/body/section[1]/div[2]/div/ul/li[4]/div[2]/div[2]/div[{}]".format(c)
+	#for loop to be added here
+	theatre_path = "/html/body/section[1]/div[2]/div/ul/li[1]/div[1]/div[2]/div/a"
+	while len(driver.find_elements_by_xpath(theatre_path)) > 0 :
+		theatre_path = "/html/body/section[1]/div[2]/div/ul/li[{}]/div[1]/div[2]/div/a".format(a)
+		venue = driver.find_element_by_xpath("/html/body/section[1]/div[2]/div/ul/li[1]/div[1]/div[2]/div/a")
+		venue_name = venue.text
+		venue_name = {
+		"Name" : venue_name
+	 	}
+		timing_path = "/html/body/section[1]/div[2]/div/ul/li[1]/div[2]/div[2]/div"
+		timing_text = driver.find_element_by_xpath(timing_path)
+		timing_value = timing_text.text
+		#print(timing_value)
+		while len(driver.find_elements_by_xpath(timing_path)) > 0 :
+			timing_value = driver.find_element_by_xpath(timing_path).text
+			price_min = check_pricing("/html/body/section[1]/div[2]/div/ul/li[{}]/div[2]/div[2]/div[{}]".format(a,c))
+			venue_name [timing_value] = price_min
+			#print(venue_name)
+			l1.append(venue_name)
+			c = c + 1
+			timing_path = "/html/body/section[1]/div[2]/div/ul/li[4]/div[2]/div[2]/div[{}]".format(c)
+		a = a + 1
+		theatre_path = "/html/body/section[1]/div[2]/div/ul/li[{}]/div[1]/div[2]/div/a".format(a)
+	print (venue_name)
 	driver.close()
 
 # def check_exists_by_xpath(xpath):
@@ -52,13 +61,14 @@ def check_pricing(xpath):
 				first_price_char = driver.find_element_by_xpath(path)
 				first_price_char = first_price_char.text.split() 
 				if(first_price_char):
+					print(first_price_char)
 					price_num.append(float(first_price_char[1]))
 				else:
 					price_char = driver.find_elements_by_class_name("seatP")
 					for price in price_char:
 						price_num = price.get_attribute("textContent").split()				
-						#print(price_num[1])
-						price_num.append(price_num[1].get_attribute("textContent"))
+						print(price.get_attribute("textContent"))
+						price_num.append(price_num[1])
 	driver.back()
 	return price_num
 
