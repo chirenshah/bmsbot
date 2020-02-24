@@ -16,28 +16,37 @@ def min():
 	l1 = []
 	c = 1
 	a = 1
-	driver.get("https://in.bookmyshow.com/buytickets/tanhaji-the-unsung-warrior-mumbai/movie-mumbai-ET00059932-MT/20200117")
-	#for loop to be added here
-	theatre_path = "/html/body/section[1]/div[2]/div/ul/li[1]/div[1]/div[2]/div/a"
+	#URL of the movie / Will be automated in the next update
+	driver.get("https://in.bookmyshow.com/buytickets/tanhaji-the-unsung-warrior-mumbai/movie-mumbai-ET00059932-MT/20200224")
+	#while there exist a theatre the loop persists
+	theatre_path = "/html/body/section[1]/div[2]/div/ul/li[{}]/div[1]/div[2]/div/a".format(a)
 	while len(driver.find_elements_by_xpath(theatre_path)) > 0 :
 		theatre_path = "/html/body/section[1]/div[2]/div/ul/li[{}]/div[1]/div[2]/div/a".format(a)
-		venue = driver.find_element_by_xpath("/html/body/section[1]/div[2]/div/ul/li[1]/div[1]/div[2]/div/a")
+		#Get theatre name
+		venue = driver.find_element_by_xpath(theatre_path)
 		venue_name = venue.text
+		#Dictionary storing venue name and timing along with prices
 		venue_name = {
 		"Name" : venue_name
 	 	}
-		timing_path = "/html/body/section[1]/div[2]/div/ul/li[1]/div[2]/div[2]/div"
-		timing_text = driver.find_element_by_xpath(timing_path)
+		timing_path1 = "/html/body/section[1]/div[2]/div/ul/li[1]/div[2]/div[2]/div"
+		timing_text = driver.find_element_by_xpath(timing_path1)
 		timing_value = timing_text.text
-		#print(timing_value)
+		print(timing_value)
+		timing_path = "/html/body/section[1]/div[2]/div/ul/li[{}]/div[2]/div[2]/div[{}]/a".format(a,c)
 		while len(driver.find_elements_by_xpath(timing_path)) > 0 :
-			timing_value = driver.find_element_by_xpath(timing_path).text
+			"""timing_value = driver.find_element_by_xpath(timing_path).text
 			price_min = check_pricing("/html/body/section[1]/div[2]/div/ul/li[{}]/div[2]/div[2]/div[{}]".format(a,c))
 			venue_name [timing_value] = price_min
 			#print(venue_name)
 			l1.append(venue_name)
 			c = c + 1
-			timing_path = "/html/body/section[1]/div[2]/div/ul/li[4]/div[2]/div[2]/div[{}]".format(c)
+			timing_path = "/html/body/section[1]/div[2]/div/ul/li[4]/div[2]/div[2]/div[{}]".format(c)"""
+			element = driver.find_element_by_xpath("/html/body/section[1]/div[2]/div/ul/li[{}]/div[2]/div[2]/div[{}]/a".format(a,c))
+			href_val = element.get_attribute("data-cat-popup")
+			c = c + 1
+			timing_path = "/html/body/section[1]/div[2]/div/ul/li[{}]/div[2]/div[2]/div[{}]/a".format(a,c)
+			print(href_val)
 		a = a + 1
 		theatre_path = "/html/body/section[1]/div[2]/div/ul/li[{}]/div[1]/div[2]/div/a".format(a)
 	print (venue_name)
@@ -52,7 +61,8 @@ def min():
 def check_pricing(xpath):
 	price_num = []
 	driver.find_element_by_xpath(xpath).click() 
-	driver.find_element_by_xpath('//*[@id="btnPopupAccept"]').click()
+	if(driver.find_elements_by_xpath('//*[@id="btnPopupAccept"]')>1):
+		driver.find_element_by_xpath('//*[@id="btnPopupAccept"]').click()
 	sleep(2)
 	for i in range (1,3):
 		for x in range (16,20):
